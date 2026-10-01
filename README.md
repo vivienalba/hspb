@@ -1,0 +1,1 @@
+Upload these files to your GitHub Pages repository root. Keep assets and fonts folders intact. Enable Pages from main and / (root). Camera access requires HTTPS or localhost.
