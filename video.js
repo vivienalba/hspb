@@ -1,26 +1,22 @@
-import { FONTS, wrapText } from './core.js';
+import { FONTS, wrapText, drawKeepsakeHeader } from './core.js';
 
 export const VIDEO_LIMIT_MS = 30_000;
 export const VIDEO_FRAME = Object.freeze({ width: 720, height: 870, x: 42, y: 174, photoWidth: 636, photoHeight: 477 });
 
-export function drawVideoFrame(canvas, photo = null, quote = '', date = null, artwork = null) {
+export function drawVideoFrame(canvas, photo = null, quote = '', date = null) {
   const ctx = canvas.getContext('2d');
   const frame = VIDEO_FRAME;
-  ctx.fillStyle = '#f6a9cb';
+  ctx.fillStyle = '#faf7ee';
   ctx.fillRect(0, 0, frame.width, frame.height);
-  ctx.strokeStyle = '#b92965';
+  ctx.strokeStyle = '#e6a0b9';
   ctx.lineWidth = 1.5;
   ctx.strokeRect(19, 19, frame.width - 38, frame.height - 38);
-  if (artwork) ctx.drawImage(artwork, frame.x, 30, frame.photoWidth, frame.photoWidth * artwork.height / artwork.width);
-  ctx.textAlign = 'center';
-  ctx.fillStyle = '#67213e';
-  ctx.font = `500 18px ${FONTS.ui}`;
-  ctx.fillText('P H O T O B O O T H', frame.width / 2, 150);
+  drawKeepsakeHeader(ctx, frame.width);
   ctx.fillStyle = '#fff7fa';
   ctx.fillRect(frame.x - 5, frame.y - 5, frame.photoWidth + 10, frame.photoHeight + 10);
   if (photo) ctx.drawImage(photo, frame.x, frame.y, frame.photoWidth, frame.photoHeight);
   else {
-    ctx.fillStyle = '#e5b9cc';
+    ctx.fillStyle = '#efd3dd';
     ctx.fillRect(frame.x, frame.y, frame.photoWidth, frame.photoHeight);
     ctx.fillStyle = '#88536b';
     ctx.font = `italic 500 58px ${FONTS.editorial}`;
@@ -32,7 +28,7 @@ export function drawVideoFrame(canvas, photo = null, quote = '', date = null, ar
   ctx.moveTo(302, 686);
   ctx.lineTo(418, 686);
   ctx.stroke();
-  const text = quote ? `“${quote}”` : 'One iconic line. Just for you.';
+  const text = quote ? `“${quote}”` : 'For your memory book.';
   let size = 39;
   ctx.font = `italic 600 ${size}px ${FONTS.editorial}`;
   let lines = wrapText(ctx, text, 584);
@@ -67,7 +63,7 @@ export function recordingMimeType(withAudio, Recorder = globalThis.MediaRecorder
 }
 
 // Record the composed canvas so the downloaded file includes the filter,
-// single pink frame and movie line. The raw camera stream is never recorded.
+// single scrapbook frame and caption. The raw camera stream is never recorded.
 export function startCanvasRecording(canvas, { audioTracks = [], onProgress = () => {} } = {}) {
   if (!supportsVideoRecording(canvas)) throw new Error('Video recording isn’t available in this browser. Try the booth in Safari, Chrome or Edge.');
   const output = canvas.captureStream(25);

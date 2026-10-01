@@ -1,25 +1,27 @@
-// Short dialogue excerpts from Mean Girls (2004).
-// https://www.imdb.com/title/tt0377092/quotes/
+// Original captions, shuffled without consecutive repeats.
 export const QUOTES = Object.freeze([
-  'On Wednesdays, we wear pink.',
-  'You can’t sit with us!',
-  'That is so fetch!',
-  'Get in, loser. We’re going shopping.',
-  'The limit does not exist.'
+  'A little moment, kept forever.',
+  'For the memories.',
+  'Just us, being us.',
+  'A very good day.',
+  'Wish you were here.'
 ]);
 
 export const STRIP = Object.freeze({ width: 600, height: 1800, x: 42, y: 180, photoWidth: 516, photoHeight: 387, gap: 22, count: 3 });
 
 export const FONTS = Object.freeze({
   editorial: '"Booth Editorial", Georgia, serif',
-  ui: 'Jost, Arial, sans-serif'
+  ui: 'Jost, Arial, sans-serif',
+  script: '"Pink Room Script", cursive'
 });
 
-export function drawMovieWordmark(ctx, artwork) {
-  if (!artwork) return;
-  const width = STRIP.photoWidth;
-  const height = width * artwork.height / artwork.width;
-  ctx.drawImage(artwork, (STRIP.width - width) / 2, 30, width, height);
+export function drawKeepsakeHeader(ctx, width) {
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#59142c';
+  ctx.font = `400 84px ${FONTS.script}`;
+  ctx.fillText('The Pink Room', width / 2, 100);
+  ctx.font = `500 17px ${FONTS.ui}`;
+  ctx.fillText('A LITTLE CAMERA CLUB', width / 2, 141);
 }
 
 export function createQuotePicker(random = Math.random) {
@@ -66,17 +68,16 @@ export function wrapText(ctx, text, maxWidth) {
   return lines;
 }
 
-export function drawStrip(canvas, photos = [], quote = '', date = null, artwork = null) {
+export function drawStrip(canvas, photos = [], quote = '', date = null) {
   const ctx = canvas.getContext('2d');
   if (!ctx) throw new Error('Your browser could not create the photo strip.');
   ctx.clearRect(0, 0, STRIP.width, STRIP.height);
-  ctx.fillStyle = '#f6a9cb';
+  ctx.fillStyle = '#faf7ee';
   ctx.fillRect(0, 0, STRIP.width, STRIP.height);
-  ctx.strokeStyle = '#b92965';
+  ctx.strokeStyle = '#e6a0b9';
   ctx.lineWidth = 1.5;
   ctx.strokeRect(19, 19, 562, 1762);
-  drawMovieWordmark(ctx, artwork);
-  centeredText(ctx, 'P H O T O B O O T H', 139, `500 18px ${FONTS.ui}`, '#67213e');
+  drawKeepsakeHeader(ctx, STRIP.width);
 
   for (let index = 0; index < STRIP.count; index++) {
     const y = STRIP.y + index * (STRIP.photoHeight + STRIP.gap);
@@ -85,17 +86,17 @@ export function drawStrip(canvas, photos = [], quote = '', date = null, artwork 
     if (photos[index]) {
       ctx.drawImage(photos[index], STRIP.x, y, STRIP.photoWidth, STRIP.photoHeight);
     } else {
-      ctx.fillStyle = '#e5b9cc';
+      ctx.fillStyle = '#efd3dd';
       ctx.fillRect(STRIP.x, y, STRIP.photoWidth, STRIP.photoHeight);
-      centeredText(ctx, `0${index + 1}`, y + 198, `italic 500 74px ${FONTS.editorial}`, '#88536b');
+      centeredText(ctx, 'a little memory', y + 202, `400 66px ${FONTS.script}`, '#88536b');
       centeredText(ctx, 'YOUR MOMENT HERE', y + 244, `500 17px ${FONTS.ui}`, '#88536b');
     }
   }
 
-  ctx.strokeStyle = '#b92965';
+  ctx.strokeStyle = '#e6a0b9';
   ctx.beginPath();
   ctx.moveTo(242, 1446); ctx.lineTo(358, 1446); ctx.stroke();
-  const text = quote ? `“${quote}”` : 'One iconic line.\nJust for you.';
+  const text = quote ? `“${quote}”` : 'For your\nmemory book.';
   ctx.font = `italic 600 46px ${FONTS.editorial}`;
   let lines = quote ? wrapText(ctx, text, 464) : text.split('\n');
   let fontSize = 46;

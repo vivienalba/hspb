@@ -4,23 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#ee7eaa">
-  <meta name="description" content="Your own Mean Girls inspired photobooth. Save a three photo strip or a single frame video up to 30 seconds, with pink frames, filters and one iconic movie line.">
-  <title>So Fetch! · Mean Girls Photobooth</title>
+  <meta name="description" content="A pink scrapbook photobooth. Take three photos or record a little movie, choose a filter and save your memories.">
+  <title>The Pink Room | Camera Club</title>
   <link rel="icon" href="icon.svg" type="image/svg+xml">
   <link rel="preload" href="fonts/jost.ttf" as="font" type="font/ttf" crossorigin>
-  <link rel="preload" href="fonts/imperial-script.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="stylesheet" href="style.css">
   <script type="module" src="app.js"></script>
 </head>
 <body>
   <div class="page-shell">
-    <header class="masthead">
-      <div class="masthead-title"><canvas class="movie-wordmark" id="movie-wordmark" width="1116" height="184" role="img" aria-label="Mean Girls">Mean Girls</canvas><span>A LITTLE CAMERA CLUB</span></div>
-    </header>
-
     <main>
       <div class="intro">
-        <div class="invitation-copy"><p class="invite-kicker">You are invited to</p><h1>The pink room</h1><p class="invite-description">Three poses or a little movie. One iconic line.</p></div>
+        <div class="invitation-copy"><p class="invite-kicker">You are invited to</p><h1>Girls’ camera club</h1></div>
         <img class="lily-accent" src="assets/scrapbook-lily.png" alt="" aria-hidden="true" width="200" height="200">
       </div>
 
@@ -48,14 +43,14 @@
             <div class="camera-empty" id="camera-empty">
               <svg class="camera-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3z"/><circle cx="12" cy="13" r="3"/></svg>
               <h3 id="empty-title">Your close up awaits</h3>
-              <p id="empty-description">Turn on your camera.<br>The rest is your main character moment.</p>
+              <p id="empty-description">Turn on your camera.</p>
               <a id="new-tab" class="new-tab" href="./" target="_blank" rel="noopener" hidden>Open the booth in a new tab</a>
             </div>
             <div class="countdown" id="countdown" aria-hidden="true" hidden></div>
             <div class="shot-prompt" id="shot-prompt" hidden></div>
             <div class="recording-clock" id="recording-clock" role="timer" aria-label="Recording time" hidden><span aria-hidden="true"></span><output id="recording-time">00:00 / 00:30</output></div>
             <div class="camera-flash" id="camera-flash" aria-hidden="true"></div>
-            <div class="viewfinder-caption" aria-hidden="true"><span>THE PINK ROOM</span><span id="frame-label">3 × YOU</span></div>
+            <div class="viewfinder-caption" aria-hidden="true"><span>THE PINK ROOM</span></div>
           </div>
 
           <fieldset class="filter-controls" id="filter-controls" aria-describedby="filter-description">
@@ -70,13 +65,13 @@
         </section>
 
         <aside class="print-panel" aria-labelledby="print-heading">
-          <div class="panel-topline"><h2 id="print-heading"><span>Keep the receipts</span></h2></div>
+          <div class="panel-topline"><h2 id="print-heading"><span>For the memory book</span></h2></div>
           <div class="strip-stage" id="strip-stage">
-            <canvas id="strip" width="600" height="1800" role="img" aria-label="Your photo strip: three empty photo frames and a space for one movie line.">Your photo strip will contain three photos and one Mean Girls line.</canvas>
-            <canvas id="video-frame" width="720" height="870" role="img" aria-label="Your video: one frame and one movie line." hidden>Your video will contain one frame and one Mean Girls line.</canvas>
-            <video id="video-result" controls playsinline preload="metadata" aria-label="Your recorded Mean Girls video" hidden></video>
+            <canvas id="strip" width="600" height="1800" role="img" aria-label="Your photo strip: three empty photo frames and a space for one little caption.">Your photo strip will contain three photos and one little caption.</canvas>
+            <canvas id="video-frame" width="720" height="870" role="img" aria-label="Your video: one frame and one little caption." hidden>Your video will contain one frame and one little caption.</canvas>
+            <video id="video-result" controls playsinline preload="metadata" aria-label="Your recorded scrapbook video" hidden></video>
           </div>
-          <div class="strip-caption" id="strip-caption">Your line is a surprise.</div>
+          <div class="strip-caption" id="strip-caption">A little memory in the making.</div>
           <div class="print-actions">
             <button class="download-button" id="download-button" type="button" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M5 16v5h14v-5"/></svg><span id="download-label">Download strip</span></button>
             <button class="print-button" id="print-button" type="button" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V3h12v6M6 18H3V9h18v9h-3M6 14h12v7H6z"/></svg>Print</button>
@@ -87,8 +82,8 @@
       </div>
       <p class="announcer" id="announcer" role="status" aria-live="polite" aria-atomic="true"></p>
     </main>
-    <footer><span>MADE FOR YOUR BURN BOOK.</span><a href="https://www.imdb.com/title/tt0377092/quotes/" target="_blank" rel="noopener noreferrer">Inspired by Mean Girls (2004)</a></footer>
+    <footer><span>WITH LOVE, THE PINK ROOM</span><nav class="policy-links" aria-label="Website policies"><a href="policies.html#privacy">Privacy</a><a href="policies.html#cookies">Cookies</a><a href="policies.html#terms">Terms</a><a href="policies.html#refunds">Refunds</a></nav></footer>
   </div>
-  <div id="print-sheet" aria-hidden="true"><img id="print-image" alt="Three-photo Mean Girls strip"></div>
+  <div id="print-sheet" aria-hidden="true"><img id="print-image" alt="Three photo scrapbook strip"></div>
 </body>
 </html>

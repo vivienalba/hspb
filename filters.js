@@ -12,9 +12,9 @@ function colorMatrix({ saturation = 1, contrast = 1, brightness = 1, red = 1, gr
 export const FILTERS = Object.freeze([
   Object.freeze({ id: 'original', name: 'Original', description: 'True to you. No filter.', matrix: null }),
   Object.freeze({ id: 'pink-haze', name: 'Pink Haze', description: 'Soft contrast, a little rose, very pink.', matrix: colorMatrix({ saturation: 0.82, contrast: 0.92, brightness: 1.02, red: 1.09, green: 0.96, blue: 1.025, lift: 3 }) }),
-  Object.freeze({ id: 'plastics', name: 'Plastics', description: 'Cool tones with a polished, glossy finish.', matrix: colorMatrix({ saturation: 0.9, contrast: 1.13, brightness: 1.02, red: 0.985, green: 0.995, blue: 1.055 }) }),
-  Object.freeze({ id: 'flash-04', name: '’04 Flash', description: 'Bright highlights and crisp, throwback contrast.', matrix: colorMatrix({ saturation: 0.84, contrast: 1.18, brightness: 1.13, red: 1.03, green: 1.01, blue: 0.985 }) }),
-  Object.freeze({ id: 'yearbook', name: 'Yearbook', description: 'Classic black-and-white with a little drama.', matrix: colorMatrix({ saturation: 0, contrast: 1.18, brightness: 1.025 }) }),
+  Object.freeze({ id: 'soft-glow', name: 'Soft Glow', description: 'Cool tones with a polished, glossy finish.', matrix: colorMatrix({ saturation: 0.9, contrast: 1.13, brightness: 1.02, red: 0.985, green: 0.995, blue: 1.055 }) }),
+  Object.freeze({ id: 'flash', name: 'Flash', description: 'Bright highlights and crisp, throwback contrast.', matrix: colorMatrix({ saturation: 0.84, contrast: 1.18, brightness: 1.13, red: 1.03, green: 1.01, blue: 0.985 }) }),
+  Object.freeze({ id: 'yearbook', name: 'Yearbook', description: 'Classic black and white with a little drama.', matrix: colorMatrix({ saturation: 0, contrast: 1.18, brightness: 1.025 }) }),
   Object.freeze({ id: 'vintage', name: 'Vintage', description: 'Warm, faded color. Straight out of a memory box.', matrix: colorMatrix({ saturation: 0.64, contrast: 0.86, brightness: 1.01, red: 1.055, green: 1.01, blue: 0.89, lift: 5 }) })
 ]);
 

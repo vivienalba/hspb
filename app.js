@@ -1,6 +1,5 @@
 import { STRIP, createQuotePicker, coverCrop, drawStrip } from './core.js';
 import { FILTERS, findFilter, applyPhotoFilter } from './filters.js';
-import { loadReferenceWordmark } from './wordmark.js';
 import { VIDEO_LIMIT_MS, drawVideoFrame, supportsVideoRecording, startCanvasRecording } from './video.js';
 
 const $ = id => document.getElementById(id);
@@ -27,7 +26,6 @@ let previewRequest = 0;
 let lastPreviewTime = 0;
 let exporting = false;
 let exportRevision = 0;
-let movieArtwork = null;
 let mode = 'photo';
 let videoPhase = 'idle';
 let recording = null;
@@ -40,20 +38,10 @@ const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
 const isLive = () => Boolean(stream?.getVideoTracks().some(track => track.readyState === 'live'));
 
 const fontsReady = document.fonts ? Promise.allSettled([
-  document.fonts.load('400 58px Jost', 'GIRLS'),
-  document.fonts.load('700 58px Jost', 'MEAN'),
+  document.fonts.load('400 80px "Pink Room Script"', 'Girls’ camera club'),
+  document.fonts.load('500 18px Jost'),
   document.fonts.load('italic 600 46px "Booth Editorial"')
 ]) : Promise.resolve();
-
-const wordmarkReady = loadReferenceWordmark().then(artwork => {
-  movieArtwork = artwork;
-  const heading = $('movie-wordmark');
-  heading.getContext('2d').drawImage(artwork, 0, 0);
-  if (!busy && !exporting && !exportData) render();
-});
-// Keep a failed asset request handled while preserving the export-time error.
-wordmarkReady.catch(error => announce(error.message));
-
 
 function drawMirroredVideo(target, ctx) {
   const crop = coverCrop(video.videoWidth, video.videoHeight, target.width, target.height);
@@ -105,7 +93,7 @@ async function refreshExport() {
   exportData = '';
   updateControls();
   try {
-    await Promise.all([fontsReady, wordmarkReady]);
+    await fontsReady;
     if (token !== operation || revision !== exportRevision) return false;
     render();
     const data = canvas.toDataURL('image/png');
@@ -187,7 +175,6 @@ function updateControls() {
   $('microphone').disabled = busy || connecting || exporting;
   $('camera-status').textContent = connecting ? 'Connecting…' : isRecording ? 'Recording' : busy ? (isVideo ? 'Preparing video' : 'Capturing') : live ? 'Camera on' : 'Camera off';
   $('camera-status').classList.toggle('live', live);
-  $('frame-label').textContent = isVideo ? 'ONE FRAME · 30 SEC MAX' : '3 × YOU';
   $('strip-stage').classList.toggle('video-mode', isVideo);
   canvas.hidden = isVideo;
   videoCanvas.hidden = !isVideo || (Boolean(videoResult) && !busy);
@@ -196,13 +183,13 @@ function updateControls() {
 }
 
 function render() {
-  drawStrip(canvas, displayedPhotos(), quote, capturedAt, movieArtwork);
-  canvas.setAttribute('aria-label', `${photos.length} of 3 photos captured. Filter: ${findFilter(filterId).name}.${quote ? ` Movie line: ${quote}` : ' One movie line will be added when your strip is complete.'}`);
+  drawStrip(canvas, displayedPhotos(), quote, capturedAt);
+  canvas.setAttribute('aria-label', `${photos.length} of 3 photos captured. Filter: ${findFilter(filterId).name}.${quote ? ` Caption: ${quote}` : ' One caption will be added when your strip is complete.'}`);
   if (!recording) renderVideo();
 }
 
 function renderVideo(frame = null) {
-  drawVideoFrame(videoCanvas, frame, videoDraft?.quote || '', videoDraft?.date || null, movieArtwork);
+  drawVideoFrame(videoCanvas, frame, videoDraft?.quote || '', videoDraft?.date || null);
 }
 
 function restingNote() {
@@ -213,11 +200,11 @@ function selectMode(nextMode) {
   if (busy || connecting || exporting || !['photo', 'video'].includes(nextMode)) return;
   mode = nextMode;
   videoPlayer.pause();
-  $('strip-caption').textContent = mode === 'video' ? (videoResult ? 'A little movie. A very big mood.' : 'Your movie line is a surprise.') : (exportData ? 'Three photos. One perfect keepsake.' : 'Your line is a surprise.');
+  $('strip-caption').textContent = mode === 'video' ? (videoResult ? 'A little moment, saved.' : 'A little memory in the making.') : (exportData ? 'Ready for your memory book.' : 'A little memory in the making.');
   $('capture-note').textContent = restingNote();
   render();
   updateControls();
-  announce(mode === 'video' ? 'Video mode. One frame, up to 30 seconds. Your filter and movie line are saved in the video.' : 'Photo strip mode. Three photos and one movie line.');
+  announce(mode === 'video' ? 'Video mode. One frame, up to 30 seconds. Your filter and caption are saved in the video.' : 'Photo strip mode. Three photos and one caption.');
 }
 
 function resetStrip() {
@@ -230,7 +217,7 @@ function resetStrip() {
   exporting = false;
   $('print-image').removeAttribute('src');
   $('strip-stage').classList.remove('complete');
-  $('strip-caption').textContent = 'Your line is a surprise.';
+  $('strip-caption').textContent = 'A little memory in the making.';
   render();
 }
 
@@ -371,9 +358,9 @@ async function captureStrip() {
     if (!await refreshExport()) return;
     if (token !== operation) return;
     $('strip-stage').classList.add('complete');
-    $('strip-caption').textContent = 'Three photos. One perfect keepsake.';
+    $('strip-caption').textContent = 'Ready for your memory book.';
     $('capture-note').textContent = 'Your strip is ready. Try a filter, then save before taking another.';
-    announce(`Your three photo strip is ready. Your line is: ${quote} Download or print your strip.`);
+    announce(`Your three photo strip is ready. Your caption is: ${quote} Download or print your strip.`);
   } catch (error) {
     if (token !== operation) return;
     resetStrip();
@@ -399,7 +386,7 @@ function finishRecording(reason = 'manual') {
   videoPhase = 'saving';
   recording.stop(reason);
   $('recording-clock').hidden = true;
-  $('capture-note').textContent = 'Saving your video with its filter, frame and movie line…';
+  $('capture-note').textContent = 'Saving your video with its filter, frame and caption…';
   updateControls();
 }
 
@@ -417,7 +404,7 @@ async function captureVideo() {
   $('strip-stage').classList.remove('complete');
   updateControls();
   try {
-    await Promise.all([fontsReady, wordmarkReady]);
+    await fontsReady;
     if (token !== operation) return;
     if ($('microphone').checked) {
       $('capture-note').textContent = 'Allow microphone access to include sound in your video.';
@@ -468,10 +455,10 @@ async function captureVideo() {
     videoPlayer.load();
     if (previousUrl) URL.revokeObjectURL(previousUrl);
     $('strip-stage').classList.add('complete');
-    $('strip-caption').textContent = 'A little movie. A very big mood.';
+    $('strip-caption').textContent = 'A little moment, saved.';
     const finish = result.reason === 'limit' ? '30 seconds. that’s a wrap.' : result.reason === 'hidden' ? 'Recording stopped when you left the tab.' : result.reason === 'camera' ? 'The camera disconnected, so your recording ended.' : 'That’s a wrap.';
     $('capture-note').textContent = `${finish} Your video is ready to play and save.`;
-    announce(`${finish} Your single frame video is ready. Filter: ${findFilter(videoResult.filterId).name}. Your line is: ${videoResult.quote}`);
+    announce(`${finish} Your single frame video is ready. Filter: ${findFilter(videoResult.filterId).name}. Your caption is: ${videoResult.quote}`);
   } catch (error) {
     if (token !== operation) return;
     $('capture-note').textContent = error.name === 'NotAllowedError' ? 'Microphone access is blocked. Allow it in your browser settings, or uncheck Include sound and record again.' : error.name === 'NotFoundError' ? 'No microphone was found. Uncheck Include sound to record without it.' : (error.message || 'The video couldn’t be saved. Please try recording again.');
@@ -530,18 +517,18 @@ $('download-button').addEventListener('click', () => {
     if (!videoResult || busy || exporting) return;
     const link = document.createElement('a');
     link.href = videoResult.url;
-    link.download = `so-fetch-video-${videoResult.filterId}-${videoResult.date.toISOString().replace(/[:.]/g, '-')}.${videoResult.extension}`;
+    link.download = `pink-room-video-${videoResult.filterId}-${videoResult.date.toISOString().replace(/[:.]/g, '-')}.${videoResult.extension}`;
     document.body.appendChild(link);
     link.click();
     link.remove();
-    $('capture-note').textContent = 'Your video includes the filter, pink frame and movie line. On a phone, save it from the download or video preview.';
+    $('capture-note').textContent = 'Your video includes the filter, pink frame and caption. On a phone, save it from the download or video preview.';
     announce('Your video is ready to save.');
     return;
   }
   if (!exportData || busy || exporting) return;
   const link = document.createElement('a');
   link.href = exportData;
-  link.download = `so-fetch-${filterId}-${capturedAt.toISOString().replace(/[:.]/g, '-')}.png`;
+  link.download = `pink-room-${filterId}-${capturedAt.toISOString().replace(/[:.]/g, '-')}.png`;
   document.body.appendChild(link);
   link.click();
   link.remove();
